@@ -40,4 +40,32 @@ names(mergedTraining)[1:2] <- c("SubjectNumber", "ActivityNumber")
 # Merging both Test and Training data frames
 library(dplyr)
 data <- rbind(mergedTest, mergedTraining)
-names(data) <- gsub("()", "", names(data))
+names(data) <- make.names(names = names(data), unique = TRUE, allow_ = TRUE)
+
+library(gdata)
+keep(data, Activities, sure = TRUE)
+data[ , 2] <- factor(data[ , 2])
+levels(data[ , 2]) <- Activities$ActivityName
+data <- arrange(data, SubjectNumber, ActivityNumber)
+keep(data, sure = TRUE)
+
+data <- select(data, 1, 2, which(grepl("(mean)|(std)",names(data))))
+# Renaming
+names(data)[1:2] <- c("Subject", "Activity")
+names(data) <- gsub("mean", "Mean", names(data))
+names(data) <- gsub("std", "SD", names(data))
+names(data) <- gsub("Freq", "Frequency", names(data))
+names(data) <- gsub("^t", "Time.", names(data))
+names(data) <- gsub("^f", "Frequency.", names(data))
+names(data) <- gsub("Acc", "Acceleration", names(data))
+names(data) <- gsub("Gyro", "Gyroscope", names(data))
+names(data) <- gsub("Mag", "Magnitude", names(data))
+names(data) <- gsub("\\.\\.\\.", "\\.", names(data))
+names(data) <- gsub("\\.\\.", "", names(data))
+names(data) <- gsub("\\.$", "", names(data))
+
+## Independent Tidy Data Set
+summarized <- melt(data, id.vars = c("Subject", "Activity"))
+summarized <- dcast(summarized, Subject + Activity ~ variable, mean)
+
+write.csv(summarized, "TidyData.csv", row.names = FALSE)
