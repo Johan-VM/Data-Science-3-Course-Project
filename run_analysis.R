@@ -74,6 +74,7 @@ names(data) <- gsub("\\.\\.", "", names(data))
 names(data) <- gsub("\\.$", "", names(data))
 
 ## 5. Independent tidy data set
+library(reshape2)
 summarized <- melt(data, id.vars = c("Subject", "Activity"))
 summarized <- dcast(summarized, Subject + Activity ~ variable, mean)
 
