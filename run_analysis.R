@@ -1,19 +1,22 @@
 ## Johan Vásquez Mazo
 ## Universidad Nacional de Colombia - Sede Medellín
 
+## 0. Preliminaries
+
+# Zip file download
 if (!file.exists("UCI HAR Dataset")) {
     download.file(url = "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", 
                   destfile = "files.zip")
     unzip("files.zip")
 }
 
-library(readtext)
 dir("./UCI HAR Dataset/")
 
 # Features
 Features <- read.table("./UCI HAR Dataset/features.txt", header = FALSE)
 names(Features) <- c("Number", "FeatureName")
-# Activity Labels
+
+# Activity labels
 Activities <- read.table("./UCI HAR Dataset/activity_labels.txt", header = FALSE)
 names(Activities) <- c("Number", "ActivityName")
 
@@ -37,7 +40,7 @@ subjectTraining <- read.table("./UCI HAR Dataset/train/subject_train.txt", heade
 mergedTraining <- cbind(subjectTraining, yTraining, XTraining)
 names(mergedTraining)[1:2] <- c("SubjectNumber", "ActivityNumber")
 
-# Merging both Test and Training data frames
+## 1. Merging both Test and Training data sets into one data set
 library(dplyr)
 data <- rbind(mergedTest, mergedTraining)
 names(data) <- make.names(names = names(data), unique = TRUE, allow_ = TRUE)
@@ -49,8 +52,14 @@ levels(data[ , 2]) <- Activities$ActivityName
 data <- arrange(data, SubjectNumber, ActivityNumber)
 keep(data, sure = TRUE)
 
+## 2. Extraction of all mean and standard deviation variables
 data <- select(data, 1, 2, which(grepl("(mean)|(std)",names(data))))
-# Renaming
+
+## 3. Renaming activity names appropriately
+library(stringr)
+levels(data[ , 2]) <- str_to_title(levels(data[ , 2]))
+
+## 4. Renaming variable names appropriately
 names(data)[1:2] <- c("Subject", "Activity")
 names(data) <- gsub("mean", "Mean", names(data))
 names(data) <- gsub("std", "SD", names(data))
@@ -64,7 +73,7 @@ names(data) <- gsub("\\.\\.\\.", "\\.", names(data))
 names(data) <- gsub("\\.\\.", "", names(data))
 names(data) <- gsub("\\.$", "", names(data))
 
-## Independent Tidy Data Set
+## 5. Independent tidy data set
 summarized <- melt(data, id.vars = c("Subject", "Activity"))
 summarized <- dcast(summarized, Subject + Activity ~ variable, mean)
 
