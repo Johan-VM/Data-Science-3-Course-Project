@@ -15,7 +15,7 @@ There are four major files in the repository, which are:
 1. **run_analysis.R**, the R script used to tidy the data, all the way from the zip file download up until the final independent data set creation.  
 2. **CodeBook.md**, the MarkDown file describing the variables, the data, and every transformation performed to clean up the data.  
 3. **README.md**, this file, listing and describing each file.  
-4. **TidyData.csv**, the independent tidy data set with the average of each variable for each activity and each subject as requested.
+4. **MeansTidyData.csv**, the independent tidy data set with the average of each variable for each activity and each subject as requested.
 
 Additionally, there should be noted that there are other files accompanying these four major files, namely those within the *UCI HAR Dataset* folder. Although the *run_analysis.R* script downloads the zip file, i.e. raw data, the reader should check the *README.txt* file, and the *activity_labels.txt*, *features.txt* and *features_info.txt* files as well, all of which are within the unzipped folder.
 
