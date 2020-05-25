@@ -78,4 +78,4 @@ library(reshape2)
 summarized <- melt(data, id.vars = c("Subject", "Activity"))
 summarized <- dcast(summarized, Subject + Activity ~ variable, mean)
 
-write.csv(summarized, "TidyData.csv", row.names = FALSE)
+write.csv(summarized, "MeansTidyData.csv", row.names = FALSE)
