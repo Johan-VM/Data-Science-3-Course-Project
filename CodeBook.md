@@ -17,7 +17,7 @@ For further information of the raw data, refer to the *README.txt* file within t
 
 ## Variables
 
-The first column of both the final data set (called `data`) and the data set containing the means (called `summarized`, or the *MeansTidyData.csv* CSV file) is the subject number or ID, which go from 1 to 30. The second column of both data sets is the activity, which is a logical vector whose levels are *walking*, *walking upstairs*, *walking downstairs*, *sitting*, *standing* and *laying*.
+The first column of both the final data set (called `data`) and the data set containing the means (called `summarized`, or the *MeansTidyData.txt* text file) is the subject number or ID, which go from 1 to 30. The second column of both data sets is the activity, which is a logical vector whose levels are *walking*, *walking upstairs*, *walking downstairs*, *sitting*, *standing* and *laying*.
 
 For the data set called `data`, there are 79 variables, all of which are either a mean or standard deviation of some variable, whose units are described as follows.  
 * **radians/seconds**, or **[rad/s]**, for the variables containing *Gyroscope* in its name, which represents the angular velocity vector measured by the gyroscope for each window sample.  
@@ -142,9 +142,9 @@ Now, to create the requested independent data set, the `data` data set is melted
 summarized <- melt(data, id.vars = c("Subject", "Activity"));
 summarized <- dcast(summarized, Subject + Activity ~ variable, mean)`
 
-Finally, the CSV file is written in line **81** calling `write.csv`. This data set is named named as *MeansTidyData.csv*.
+Finally, the text file is written in line **81** calling `write.table`. This data set is named as *MeansTidyData.txt*.
 
-**81** `write.csv(summarized, "MeansTidyData.csv", row.names = FALSE)`
+**81** `write.table(summarized, "MeansTidyData.txt", row.names = FALSE)`
 
 ## Session Info
 
