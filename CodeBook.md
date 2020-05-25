@@ -7,6 +7,24 @@ output: html_document
 
 This is the CodeBook for the course project of the **Getting and Cleaning Data** course on Coursera.
 
+## Data
+
+The raw data set used for this project was retrieved from the *UCI Data Repository*, whose source is referenced.[^1] The tidying of the data described in the **Coding** section of this file was based on Hadley Wickham's *Tidy Data* paper.[^2]
+
+The *run_analysis.R* script returns two data sets, the first one is called `data`, which is a data frame containing the measurements of the mean and standard deviation variables for each subject and each activity; the second data frame is called `summarized`, which summarizes the variables of `data` calculating their means for each subject and each activity.
+
+For further information of the raw data, refer to the *README.txt* file within the *UCI HAR Dataset* directory, which is **different** from the *README.txt* file of the course project.
+
+## Variables
+
+The first column of both the final data set (called `data`) and the data set containing the means (called `summarized`, or the *MeansTidyData.csv* CSV file) is the subject number or ID, which go from 1 to 30. The second column of both data sets is the activity, which is a logical vector whose levels are *walking*, *walking upstairs*, *walking downstairs*, *sitting*, *standing* and *laying*.
+
+For the data set called `data`, there are 79 variables, all of which are either a mean or standard deviation of some variable, whose units are described as follows.  
+* **radians/seconds**, or **[rad/s]**, for the variables containing *Gyroscope* in its name, which represents the angular velocity vector measured by the gyroscope for each window sample.  
+* **standard gravity units, g**, for the variables containing *Acceleration* in its name. The *Acceleration* variables with *Body* in their names refers to the body acceleration signal obtained by subtracting the gravity from the total acceleration.
+
+The features containing *Magnitude* refer to the magnitude of the variable calculated as the Euclidean norm of the corresponding variable in each axis (X, Y and Z). **SD** means **standard deviation**.
+
 ## Coding
 
 This section contains the *run_analysis.R* script description.
@@ -37,7 +55,7 @@ names(Activities) <- c("Number", "ActivityName")`
 
 ### Reading and merging Test files
 
-The Test files are first listed running the code in line **24**, and then the *X_test.txt* test file is read into a big data frame, whose columns are the variables listed in *features.txt*, and its rows are the measurements for each subject and activity. The activities and subject numbers are in the files *y_test.txt* and *subject_test.txt*, respectively, which are read in lines **27** and **28**. The column names of the data frame *XTest* are changed into the variable names in line **26**.
+The Test files are first listed running the code in line **24**, and then the *X_test.txt* test file is read into a big data frame, whose columns are the variables listed in *features.txt*, and its rows are the measurements for each subject and activity. The activities and subject numbers are in the files *y_test.txt* and *subject_test.txt*, respectively, which are read in lines **27** and **28**. The column names of the data frame `XTest` are changed into the variable names in line **26**.
 
 **[24:26]** `dir("./UCI HAR Dataset/test/");
 XTest <- read.table("./UCI HAR Dataset/test/X_test.txt", header = FALSE);
@@ -52,7 +70,7 @@ names(mergedTest)[1:2] <- c("SubjectNumber", "ActivityNumber")`
 
 ### Reading and merging Training files
 
-The Training files are first listed running the code in line **34**, and then the *X_train.txt* test file is read into a big data frame, whose columns are the variables listed in *features.txt*, and its rows are the measurements for each subject and activity. The activities and subject numbers are in the files *y_train.txt* and *subject_train.txt*, respectively, which are read in lines **37** and **38**. The column names of the data frame *XTraining* are changed into the variable names in line **36**.
+The Training files are first listed running the code in line **34**, and then the *X_train.txt* test file is read into a big data frame, whose columns are the variables listed in *features.txt*, and its rows are the measurements for each subject and activity. The activities and subject numbers are in the files *y_train.txt* and *subject_train.txt*, respectively, which are read in lines **37** and **38**. The column names of the data frame `XTraining` are changed into the variable names in line **36**.
 
 **[34:36]** `dir("./UCI HAR Dataset/train/");
 XTraining <- read.table("./UCI HAR Dataset/train/X_train.txt", header = FALSE);
@@ -114,19 +132,19 @@ names(data) <- gsub("Mag", "Magnitude", names(data))`
 names(data) <- gsub("\\.\\.", "", names(data));
 names(data) <- gsub("\\.$", "", names(data))`
 
-The data set called *data* is tidy, for each column corresponds to a variable or attribute, and each row corresponds to a measurement. The first column is the subject number (or ID), the second column is the activity, and the following columns are the features.
+The data set called `data` is tidy, for each column corresponds to a variable or attribute, and each row corresponds to a measurement. The first column is the subject number (or ID), the second column is the activity, and the following columns are the features.
 
 ### Creating independent tidy data set
 
-Now, to create the requested independent data set, the *data* data set is melted by subject number and activity, which is done in line **78** by calling `melt` from the `reshape` package, and stored into a data frame called *summarized*. Then, this data frame (*summarized*) is casted into a data frame, which contains the mean of each variable for each subject and each activity by calling the `dcast` function from the same package in line **79**.
+Now, to create the requested independent data set, the `data` data set is melted by subject number and activity, which is done in line **78** by calling `melt` from the `reshape` package, and stored into a data frame called `summarized`. Then, this data frame (`summarized`) is casted into a data frame, which contains the mean of each variable for each subject and each activity by calling the `dcast` function from the same package in line **79**.
 
 **[77:79]** `library(reshape2);
 summarized <- melt(data, id.vars = c("Subject", "Activity"));
 summarized <- dcast(summarized, Subject + Activity ~ variable, mean)`
 
-Finally, the CSV file is written in line **81** calling `write.csv`. This data set is named named as *TidyData.csv*.
+Finally, the CSV file is written in line **81** calling `write.csv`. This data set is named named as *MeansTidyData.csv*.
 
-**81** `write.csv(summarized, "TidyData.csv", row.names = FALSE)`
+**81** `write.csv(summarized, "MeansTidyData.csv", row.names = FALSE)`
 
 ## Session Info
 
@@ -153,6 +171,6 @@ loaded via a namespace (and not attached):
 
 ## References
 
-[^1] Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
+[^1]: Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
 
-[^2] Wickham, H. (2014). Tidy Data. Journal of Statistical Software, 59(10), 1 - 23. doi:<http://dx.doi.org/10.18637/jss.v059.i10>
+[^2]: Wickham, H. (2014). Tidy Data. Journal of Statistical Software, 59(10), 1 - 23. doi:<http://dx.doi.org/10.18637/jss.v059.i10>
